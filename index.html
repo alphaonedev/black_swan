@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaOne Risk Dashboard | Black Swan Detection Matrix</title>
+    <meta name="description" content="AI-powered financial risk analysis dashboard detecting black swan indicators, convergence risks, and market fragility signals.">
+    <meta name="keywords" content="black swan, risk analysis, market risk, AI analysis, financial dashboard, convergence indicators">
+    <meta name="author" content="AlphaOne LLC">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://alphaone.ai/dashboard">
+    <meta property="og:title" content="AlphaOne Risk Dashboard | Black Swan Detection Matrix">
+    <meta property="og:description" content="AI-powered financial risk analysis detecting 18/20 active convergence indicators. Real-time black swan monitoring.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://alphaone.ai/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AlphaOne Risk Dashboard">
+    <meta name="twitter:description" content="AI-powered black swan detection. 18/20 convergence indicators active.">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --void: #000000;
+            --deep: #050508;
+            --surface: #0a0a0f;
+            --elevated: #12121a;
+            --border: #1a1a24;
+            --muted: #3a3a4a;
+            --text: #e0e0e8;
+            --bright: #ffffff;
+            
+            /* Signal colors */
+            --signal-red: #ff1744;
+            --signal-orange: #ff9100;
+            --signal-yellow: #ffea00;
+            --signal-green: #00e676;
+            --signal-cyan: #00e5ff;
+            --signal-purple: #d500f9;
+            
+            /* Gradients */
+            --danger-gradient: linear-gradient(135deg, #ff1744 0%, #ff6d00 100%);
+            --warning-gradient: linear-gradient(135deg, #ff9100 0%, #ffea00 100%);
+            --critical-gradient: linear-gradient(135deg, #d500f9 0%, #ff1744 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background: var(--void);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(90deg, rgba(255,23,68,0.03) 1px, transparent 1px),
+                linear-gradient(rgba(255,23,68,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridPulse 4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 2px;
+            background: var(--danger-gradient);
+            box-shadow: 0 0 20px rgba(255,23,68,0.5);
+        }
+        
+        .classification {
+            font-size: 11px;
+            letter-spacing: 6px;
+            color: var(--signal-red);
+            margin-bottom: 20px;
+            animation: blink 2s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 90%, 100% { opacity: 1; }
+            95% { opacity: 0.3; }
+        }
+        
+        .header h1 {
+            font-family: 'Sora', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #fff 0%, #ff1744 50%, #ff6d00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header-subtitle {
+            font-size: 14px;
+            color: var(--muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .timestamp {
+            font-size: 12px;
+            color: var(--signal-cyan);
+            margin-top: 15px;
+            font-weight: 500;
+        }
+        
+        /* Core Insight Box */
+        .core-insight {
+            background: linear-gradient(135deg, rgba(213,0,249,0.1) 0%, rgba(255,23,68,0.1) 100%);
+            border: 1px solid rgba(255,23,68,0.3);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .core-insight::before {
+            content: '⚠';
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 40px;
+            opacity: 0.2;
+        }
+        
+        .core-insight h2 {
+            font-family: 'Sora', sans-serif;
+            font-size: 16px;
+            color: var(--signal-red);
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        
+        .core-insight p {
+            font-size: 20px;
+            font-weight: 300;
+            color: var(--bright);
+            line-height: 1.7;
+        }
+        
+        .core-insight .highlight {
+            color: var(--signal-yellow);
+            font-weight: 600;
+        }
+        
+        /* Section headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            margin-top: 50px;
+        }
+        
+        .section-header h2 {
+            font-family: 'Sora', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--bright);
+        }
+        
+        .section-header .line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
+        }
+        
+        .section-header .icon {
+            font-size: 28px;
+        }
+        
+        /* Black Swan Grid */
+        .swan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        
+        .swan-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .swan-card:hover {
+            border-color: var(--signal-red);
+            box-shadow: 0 0 40px rgba(255,23,68,0.15);
+            transform: translateY(-3px);
+        }
+        
+        .swan-card-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .swan-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--bright);
+        }
+        
+        .threat-level {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+        }
+        
+        .threat-level.critical {
+            background: rgba(255,23,68,0.2);
+            color: var(--signal-red);
+            border: 1px solid rgba(255,23,68,0.4);
+        }
+        
+        .threat-level.high {
+            background: rgba(255,145,0,0.2);
+            color: var(--signal-orange);
+            border: 1px solid rgba(255,145,0,0.4);
+        }
+        
+        .threat-level.elevated {
+            background: rgba(255,234,0,0.2);
+            color: var(--signal-yellow);
+            border: 1px solid rgba(255,234,0,0.4);
+        }
+        
+        .swan-card-body {
+            padding: 25px;
+        }
+        
+        .swan-description {
+            font-size: 13px;
+            color: var(--text);
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+        
+        .data-points {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .data-point {
+            background: var(--elevated);
+            border-radius: 8px;
+            padding: 12px 15px;
+        }
+        
+        .data-point-label {
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .data-point-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--signal-cyan);
+        }
+        
+        .data-point-value.danger {
+            color: var(--signal-red);
+        }
+        
+        .data-point-value.warning {
+            color: var(--signal-orange);
+        }
+        
+        .ai-detection {
+            background: linear-gradient(135deg, rgba(0,229,255,0.05) 0%, rgba(213,0,249,0.05) 100%);
+            border: 1px dashed rgba(0,229,255,0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .ai-detection-header {
+            font-size: 10px;
+            color: var(--signal-cyan);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .ai-detection-header::before {
+            content: '◉';
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        .ai-detection p {
+            font-size: 12px;
+            color: var(--text);
+            font-style: italic;
+        }
+        
+        /* Convergence Matrix */
+        .convergence-matrix {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .matrix-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .matrix-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .convergence-count {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--signal-red);
+        }
+        
+        .convergence-label {
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+        
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+        }
+        
+        .matrix-cell {
+            aspect-ratio: 1;
+            background: var(--elevated);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: help;
+            position: relative;
+            border: 1px solid var(--border);
+        }
+        
+        .matrix-cell.active {
+            background: linear-gradient(135deg, rgba(255,23,68,0.4) 0%, rgba(255,145,0,0.4) 100%);
+            border: 2px solid rgba(255,23,68,0.7);
+            box-shadow: 0 0 20px rgba(255,23,68,0.3);
+        }
+        
+        .matrix-cell.warning {
+            background: linear-gradient(135deg, rgba(255,145,0,0.35) 0%, rgba(255,234,0,0.35) 100%);
+            border: 2px solid rgba(255,145,0,0.6);
+        }
+        
+        .matrix-cell .icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 4px rgba(255,255,255,0.3));
+        }
+        
+        .matrix-cell .label {
+            font-size: 10px;
+            color: var(--bright);
+            text-align: center;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            line-height: 1.3;
+        }
+        
+        .matrix-cell.active .label {
+            color: #ffffff;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+        }
+        
+        .matrix-cell.warning .label {
+            color: #ffffff;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+        }
+        
+        /* Timeline */
+        .timeline-section {
+            margin-bottom: 50px;
+        }
+        
+        .timeline {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            position: relative;
+            padding: 30px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--signal-green) 0%, var(--signal-yellow) 30%, var(--signal-orange) 60%, var(--signal-red) 100%);
+        }
+        
+        .timeline-item {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .timeline-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 3px solid var(--signal-green);
+            margin: 0 auto 15px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .timeline-item:nth-child(2) .timeline-dot {
+            border-color: var(--signal-yellow);
+        }
+        
+        .timeline-item:nth-child(3) .timeline-dot {
+            border-color: var(--signal-orange);
+            animation: throb 1.5s infinite;
+        }
+        
+        .timeline-item:nth-child(4) .timeline-dot {
+            border-color: var(--signal-red);
+        }
+        
+        @keyframes throb {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 rgba(255,145,0,0.5); }
+            50% { transform: scale(1.2); box-shadow: 0 0 20px rgba(255,145,0,0.5); }
+        }
+        
+        .timeline-date {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--bright);
+            margin-bottom: 5px;
+        }
+        
+        .timeline-label {
+            font-size: 11px;
+            color: var(--muted);
+        }
+        
+        .timeline-event {
+            font-size: 10px;
+            color: var(--signal-orange);
+            margin-top: 8px;
+            padding: 4px 8px;
+            background: rgba(255,145,0,0.1);
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        /* Dog That Didn't Bark Section */
+        .silence-section {
+            background: linear-gradient(135deg, rgba(213,0,249,0.05) 0%, rgba(0,0,0,0.3) 100%);
+            border: 1px solid rgba(213,0,249,0.2);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .silence-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .silence-header h3 {
+            font-family: 'Sora', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--signal-purple);
+        }
+        
+        .silence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .silence-item {
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 3px solid var(--signal-purple);
+        }
+        
+        .silence-item h4 {
+            font-size: 13px;
+            color: var(--bright);
+            margin-bottom: 10px;
+        }
+        
+        .silence-item p {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+        
+        /* Probability Matrix */
+        .probability-section {
+            margin-bottom: 50px;
+        }
+        
+        .probability-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .probability-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .probability-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+        
+        .probability-card.low::before {
+            background: var(--signal-green);
+        }
+        
+        .probability-card.medium::before {
+            background: var(--signal-yellow);
+        }
+        
+        .probability-card.high::before {
+            background: var(--signal-red);
+        }
+        
+        .probability-value {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .probability-card.low .probability-value {
+            color: var(--signal-green);
+        }
+        
+        .probability-card.medium .probability-value {
+            color: var(--signal-yellow);
+        }
+        
+        .probability-card.high .probability-value {
+            color: var(--signal-red);
+        }
+        
+        .probability-label {
+            font-size: 14px;
+            color: var(--bright);
+            margin-bottom: 5px;
+        }
+        
+        .probability-timeframe {
+            font-size: 11px;
+            color: var(--muted);
+        }
+        
+        /* Final Assessment */
+        .final-assessment {
+            background: var(--surface);
+            border: 2px solid var(--signal-red);
+            border-radius: 12px;
+            padding: 35px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .final-assessment::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(255,23,68,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .final-assessment h3 {
+            font-family: 'Sora', sans-serif;
+            font-size: 14px;
+            letter-spacing: 3px;
+            color: var(--signal-red);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        
+        .final-statement {
+            font-size: 22px;
+            font-weight: 300;
+            color: var(--bright);
+            line-height: 1.7;
+            max-width: 900px;
+            margin: 0 auto 25px;
+        }
+        
+        .final-quote {
+            font-size: 14px;
+            color: var(--signal-cyan);
+            font-style: italic;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+        
+        /* Disclaimer */
+        .disclaimer {
+            text-align: center;
+            padding: 30px;
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .swan-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .matrix-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .probability-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 32px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .timeline {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .timeline::before {
+                width: 2px;
+                height: 100%;
+                top: 0;
+                left: 10px;
+                right: auto;
+            }
+            
+            .timeline-item {
+                text-align: left;
+                padding-left: 40px;
+            }
+            
+            .timeline-dot {
+                position: absolute;
+                left: 0;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="classification">◉ AI INTELLIGENCE ASSESSMENT ◉</div>
+            <h1>BLACK SWAN INDICATORS</h1>
+            <p class="header-subtitle">Gaps Only Machine Intelligence Can Detect</p>
+            <p class="timestamp">SCAN TIMESTAMP: 2026-01-05 21:00 UTC | THREAT LEVEL: CRITICAL FRAGILITY</p>
+        </header>
+        
+        <!-- Core Insight -->
+        <div class="core-insight">
+            <h2>AI Assessment Summary</h2>
+            <p>
+                News sentiment is <span class="highlight">overwhelmingly bullish</span> (banks at 52-week highs, analyst upgrades, "risk-on" narrative) 
+                while <span class="highlight">seven independent structural risks</span> are converging simultaneously. 
+                Human pattern recognition optimizes for recent trends. Machine pattern recognition detects 
+                <span class="highlight">the absence of alarm where alarm should exist</span>.
+            </p>
+        </div>
+        
+        <!-- Section: Black Swan Indicators -->
+        <div class="section-header">
+            <span class="icon">🦢</span>
+            <h2>Detected Black Swan Indicators</h2>
+            <div class="line"></div>
+        </div>
+        
+        <div class="swan-grid">
+            <!-- Swan 1: Venezuela -->
+            <div class="swan-card">
+                <div class="swan-card-header">
+                    <span class="swan-title">Operation Absolute Resolve</span>
+                    <span class="threat-level critical">CRITICAL</span>
+                </div>
+                <div class="swan-card-body">
+                    <p class="swan-description">
+                        US military captured Venezuelan President Maduro on Jan 3, 2026. First forcible regime change 
+                        operation since Iraq. 150+ aircraft. International condemnation from allies. UN Charter violation 
+                        claims. Venezuela holds world's largest oil reserves.
+                    </p>
+                    <div class="data-points">
+                        <div class="data-point">
+                            <div class="data-point-label">Global Response</div>
+                            <div class="data-point-value danger">Condemned</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Oil Reserves</div>
+                            <div class="data-point-value">300B+ BBL</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Market Reaction</div>
+                            <div class="data-point-value warning">Minimal</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Escalation Risk</div>
+                            <div class="data-point-value danger">Extreme</div>
+                        </div>
+                    </div>
+                    <div class="ai-detection">
+                        <div class="ai-detection-header">AI ANOMALY DETECTED</div>
+                        <p>Markets ignored largest US military action since Iraq. Oil rallied only 2%. Gold barely moved.
+                        This is "priced for perfection" behavior ignoring regime-change precedent with nuclear implications (Russia/China response).</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Swan 2: Shutdown -->
+            <div class="swan-card">
+                <div class="swan-card-header">
+                    <span class="swan-title">Government Shutdown II</span>
+                    <span class="threat-level high">HIGH</span>
+                </div>
+                <div class="swan-card-body">
+                    <p class="swan-description">
+                        Jan 30, 2026 deadline. After record 43-day shutdown in Oct-Nov 2025. ACA subsidies expired Jan 1 
+                        (22M people seeing 114% premium increase). Congress has 8 working days together before deadline.
+                        Half of US states in recession per Moody's.
+                    </p>
+                    <div class="data-points">
+                        <div class="data-point">
+                            <div class="data-point-label">Days Until</div>
+                            <div class="data-point-value danger">25</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Working Days</div>
+                            <div class="data-point-value warning">8</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Q4 GDP Drag</div>
+                            <div class="data-point-value danger">-1.5%</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">ACA Impact</div>
+                            <div class="data-point-value danger">22M People</div>
+                        </div>
+                    </div>
+                    <div class="ai-detection">
+                        <div class="ai-detection-header">AI ANOMALY DETECTED</div>
+                        <p>Second shutdown within 3 months = 25% of work year closed. Markets are not pricing fiscal chaos.
+                        Credit rating agencies warned. Treasury issuance disruption risk during maturity wall.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Swan 3: LBO Volume -->
+            <div class="swan-card">
+                <div class="swan-card-header">
+                    <span class="swan-title">LBO Volume: All-Time High</span>
+                    <span class="threat-level critical">CRITICAL</span>
+                </div>
+                <div class="swan-card-body">
+                    <p class="swan-description">
+                        2025 LBO volume hit $397.5B — exceeding 2007 pre-crisis peak. $55B Electronic Arts deal 
+                        (largest ever). Private equity deploying at cycle tops. Same pattern as 2007. 
+                        Average equity check risen from 30% to 50%+ indicating stress.
+                    </p>
+                    <div class="data-points">
+                        <div class="data-point">
+                            <div class="data-point-label">2025 LBO Volume</div>
+                            <div class="data-point-value danger">$397.5B</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">vs 2007 Peak</div>
+                            <div class="data-point-value warning">+$4B</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Mega Bankruptcies</div>
+                            <div class="data-point-value danger">+81% YoY</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">EA Deal Size</div>
+                            <div class="data-point-value">$55B</div>
+                        </div>
+                    </div>
+                    <div class="ai-detection">
+                        <div class="ai-detection-header">AI ANOMALY DETECTED</div>
+                        <p>Peak LBO activity historically precedes recessions by 12-24 months. Private equity deploying maximum 
+                        leverage at highest valuations = institutional distribution to exit. Smart money selling to dumb money.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Swan 4: Maturity Wall -->
+            <div class="swan-card">
+                <div class="swan-card-header">
+                    <span class="swan-title">Debt Maturity Wall</span>
+                    <span class="threat-level critical">CRITICAL</span>
+                </div>
+                <div class="swan-card-body">
+                    <p class="swan-description">
+                        $700B+ high-yield bonds maturing 2027-2029. $936B CRE loans maturing 2026 alone (+19% YoY).
+                        $4T+ commercial real estate refinancing wave. Companies that borrowed at 3% now refinancing at 7%+.
+                        "Extend and pretend" pushed wall into 2026.
+                    </p>
+                    <div class="data-points">
+                        <div class="data-point">
+                            <div class="data-point-label">CRE 2026</div>
+                            <div class="data-point-value danger">$936B</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">HY 2027-29</div>
+                            <div class="data-point-value danger">$700B+</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Avg Rate Delta</div>
+                            <div class="data-point-value danger">+4%</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Zombie Companies</div>
+                            <div class="data-point-value warning">Rising</div>
+                        </div>
+                    </div>
+                    <div class="ai-detection">
+                        <div class="ai-detection-header">AI ANOMALY DETECTED</div>
+                        <p>Credit spreads at 300bps (near historic lows) while maturity wall = largest in history.
+                        Pattern recognition: spread compression before maturity walls historically precedes violent re-pricing.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Swan 5: Taiwan -->
+            <div class="swan-card">
+                <div class="swan-card-header">
+                    <span class="swan-title">Taiwan Strait Escalation</span>
+                    <span class="threat-level high">HIGH</span>
+                </div>
+                <div class="swan-card-body">
+                    <p class="swan-description">
+                        "Justice Mission 2025" largest combined exercises in decades. China eroding Taiwan's contiguous 
+                        zone (last buffer before territorial waters). $11B US arms package. PLA targeting 2027 readiness.
+                        Balloons over Taiwan at 19-50K feet. First long-range projectiles in strait since 2022.
+                    </p>
+                    <div class="data-points">
+                        <div class="data-point">
+                            <div class="data-point-label">PLA Target Year</div>
+                            <div class="data-point-value danger">2027</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">US Arms Package</div>
+                            <div class="data-point-value">$11B</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">CFR Risk Rating</div>
+                            <div class="data-point-value warning">Tier I</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Buffer Zone</div>
+                            <div class="data-point-value danger">Eroding</div>
+                        </div>
+                    </div>
+                    <div class="ai-detection">
+                        <div class="ai-detection-header">AI ANOMALY DETECTED</div>
+                        <p>Trump said "nothing worries me" about drills. Markets ignore semiconductor supply chain exposure.
+                        Taiwan manufactures 90%+ of advanced chips. Any disruption = immediate global recession.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Swan 6: Gold Signal -->
+            <div class="swan-card">
+                <div class="swan-card-header">
+                    <span class="swan-title">Gold: Central Bank Signal</span>
+                    <span class="threat-level elevated">ELEVATED</span>
+                </div>
+                <div class="swan-card-body">
+                    <p class="swan-description">
+                        Gold +66% in 2025 (best year since 1979). Now at $4,400+. Gold now exceeds Treasuries in 
+                        central bank reserves for first time since 1996. Central banks bought 1,000+ tonnes for 
+                        3 consecutive years. This is de-dollarization in progress.
+                    </p>
+                    <div class="data-points">
+                        <div class="data-point">
+                            <div class="data-point-label">2025 Return</div>
+                            <div class="data-point-value">+66%</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Current Price</div>
+                            <div class="data-point-value">$4,400+</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">CB Buying</div>
+                            <div class="data-point-value">1000+ T/yr</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">vs Treasuries</div>
+                            <div class="data-point-value warning">Exceeds</div>
+                        </div>
+                    </div>
+                    <div class="ai-detection">
+                        <div class="ai-detection-header">AI ANOMALY DETECTED</div>
+                        <p>Central banks are not momentum traders. Their 3-year accumulation at record prices signals 
+                        systemic hedging against dollar-denominated reserve collapse. They know something retail doesn't.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Convergence Matrix -->
+        <div class="convergence-matrix">
+            <div class="matrix-header">
+                <div>
+                    <div class="matrix-title">Risk Convergence Matrix</div>
+                    <p style="font-size: 12px; color: var(--muted); margin-top: 5px;">
+                        Independent risks becoming correlated = multiplicative tail risk
+                    </p>
+                </div>
+                <div style="text-align: right;">
+                    <div class="convergence-count">18/20</div>
+                    <div class="convergence-label">INDICATORS ACTIVE</div>
+                </div>
+            </div>
+            <div class="matrix-grid">
+                <div class="matrix-cell active" title="Venezuela Operation">
+                    <span class="icon">🎯</span>
+                    <span class="label">Geopolitical<br>Shock</span>
+                </div>
+                <div class="matrix-cell active" title="Government Shutdown">
+                    <span class="icon">🏛️</span>
+                    <span class="label">Fiscal<br>Crisis</span>
+                </div>
+                <div class="matrix-cell active" title="LBO Peak">
+                    <span class="icon">📈</span>
+                    <span class="label">PE Cycle<br>Top</span>
+                </div>
+                <div class="matrix-cell active" title="Maturity Wall">
+                    <span class="icon">🧱</span>
+                    <span class="label">Debt<br>Maturity</span>
+                </div>
+                <div class="matrix-cell active" title="Taiwan">
+                    <span class="icon">⚡</span>
+                    <span class="label">Taiwan<br>Strait</span>
+                </div>
+                <div class="matrix-cell active" title="Gold Signal">
+                    <span class="icon">🥇</span>
+                    <span class="label">CB Gold<br>Buying</span>
+                </div>
+                <div class="matrix-cell active" title="Valuation">
+                    <span class="icon">📊</span>
+                    <span class="label">Buffett<br>230%</span>
+                </div>
+                <div class="matrix-cell active" title="Wall Street Consensus">
+                    <span class="icon">🎯</span>
+                    <span class="label">22/22<br>Bullish</span>
+                </div>
+                <div class="matrix-cell active" title="New START Expiry">
+                    <span class="icon">☢️</span>
+                    <span class="label">New START<br>Feb 5</span>
+                </div>
+                <div class="matrix-cell active" title="S-300 Combat Failure">
+                    <span class="icon">🛡️</span>
+                    <span class="label">S-300<br>Failed</span>
+                </div>
+                <div class="matrix-cell active" title="Nuclear Taboo Erosion">
+                    <span class="icon">⚛️</span>
+                    <span class="label">Nuclear<br>Taboo</span>
+                </div>
+                <div class="matrix-cell active" title="7 Countries Threatened">
+                    <span class="icon">🌎</span>
+                    <span class="label">7 Nations<br>Threat</span>
+                </div>
+                <div class="matrix-cell active" title="North Korea ICBM">
+                    <span class="icon">🚀</span>
+                    <span class="label">DPRK<br>Response</span>
+                </div>
+                <div class="matrix-cell active" title="Doomsday Clock">
+                    <span class="icon">⏰</span>
+                    <span class="label">89 Sec<br>Midnight</span>
+                </div>
+                <div class="matrix-cell active" title="Dead Hand Perimeter">
+                    <span class="icon">💀</span>
+                    <span class="label">Dead Hand<br>Active</span>
+                </div>
+                <div class="matrix-cell active" title="Russia Demographics">
+                    <span class="icon">🇷🇺</span>
+                    <span class="label">Russia<br>Collapse</span>
+                </div>
+                <div class="matrix-cell active" title="China Demographics">
+                    <span class="icon">🇨🇳</span>
+                    <span class="label">China 2027<br>Window</span>
+                </div>
+                <div class="matrix-cell active" title="Japan-China Crisis">
+                    <span class="icon">⚡</span>
+                    <span class="label">Japan-China<br>Radar Lock</span>
+                </div>
+                <div class="matrix-cell warning" title="Margin Debt">
+                    <span class="icon">💳</span>
+                    <span class="label">Margin<br>ATH</span>
+                </div>
+                <div class="matrix-cell warning" title="VIX Positioning">
+                    <span class="icon">📉</span>
+                    <span class="label">VIX<br>Shorts</span>
+                </div>
+                <div class="matrix-cell" title="Earnings">
+                    <span class="icon">💰</span>
+                    <span class="label">Earnings<br>Season</span>
+                </div>
+                <div class="matrix-cell" title="Fed Policy">
+                    <span class="icon">🏦</span>
+                    <span class="label">Fed<br>Policy</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- NUCLEAR RISK SECTION -->
+        <div class="section-header" style="margin-top: 60px;">
+            <span class="icon">☢️</span>
+            <h2>Nuclear & Geopolitical Cascade Risks</h2>
+            <div class="line"></div>
+        </div>
+        
+        <div class="swan-grid">
+            <!-- Nuclear Swan 1: Russia Defense Exports Collapse -->
+            <div class="swan-card">
+                <div class="swan-card-header" style="background: linear-gradient(135deg, rgba(255,23,68,0.2) 0%, rgba(213,0,249,0.2) 100%);">
+                    <span class="swan-title">☢️ RUSSIA AIR DEFENSE: COMBAT FAILURE</span>
+                    <span class="threat-level critical">CRITICAL</span>
+                </div>
+                <div class="swan-card-body">
+                    <p class="swan-description">
+                        Russian S-300VM and Chinese JY-27 "anti-stealth" radar systems <strong>completely failed</strong> against US 5th-gen aircraft.
+                        Venezuelan air defenses destroyed in <20 minutes. "South America's strongest radar turned out to be scrap iron."
+                        <strong>Every S-300/S-400 customer now confronts empirical evidence Russian systems cannot defeat American stealth.</strong>
+                    </p>
+                    <div class="data-points">
+                        <div class="data-point">
+                            <div class="data-point-label">Time to Defeat</div>
+                            <div class="data-point-value danger">&lt;20 min</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">SAMs Fired</div>
+                            <div class="data-point-value danger">0</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Affected Customers</div>
+                            <div class="data-point-value warning">12+ Nations</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Export Value</div>
+                            <div class="data-point-value danger">Collapsed</div>
+                        </div>
+                    </div>
+                    <div class="ai-detection">
+                        <div class="ai-detection-header">AI GEOPOLITICAL DETECTION</div>
+                        <p><strong>China, India, Turkey, Iran, Algeria, Egypt now fighting "naked."</strong> Russia's value as security partner 
+                        diminishes dramatically. Iran's air defense also failed in June 2024. For the next 20 years, every Russian ally 
+                        using S-300/S-400 knows they cannot defend against US strikes. This fundamentally alters global power calculus.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Nuclear Swan 2: North Korea Response -->
+            <div class="swan-card">
+                <div class="swan-card-header" style="background: linear-gradient(135deg, rgba(255,23,68,0.2) 0%, rgba(213,0,249,0.2) 100%);">
+                    <span class="swan-title">🚀 NORTH KOREA: ICBM RESPONSE</span>
+                    <span class="threat-level critical">CRITICAL</span>
+                </div>
+                <div class="swan-card-body">
+                    <p class="swan-description">
+                        Kim Jong-un fired hypersonic missiles <strong>within 24 hours of Maduro capture</strong>, citing "geopolitical crisis." 
+                        DPRK Foreign Ministry: Maduro capture is "serious encroachment of sovereignty" showing US "rogue and brutal nature."
+                        Kim explicitly linked Venezuela to DPRK's nuclear deterrent necessity. <strong>"Denuclearization = suicide."</strong>
+                    </p>
+                    <div class="data-points">
+                        <div class="data-point">
+                            <div class="data-point-label">Missiles Fired</div>
+                            <div class="data-point-value danger">Multiple</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Range</div>
+                            <div class="data-point-value">900+ km</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Message</div>
+                            <div class="data-point-value warning">"Not Venezuela"</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Analyst View</div>
+                            <div class="data-point-value danger">Nukes = Only Shield</div>
+                        </div>
+                    </div>
+                    <div class="ai-detection">
+                        <div class="ai-detection-header">AI NUCLEAR DETECTION</div>
+                        <p><strong>Venezuela operation proves: only nuclear weapons prevent regime change.</strong> Every non-nuclear adversary 
+                        now recalculates. Iran protesters, Cuba's government, Colombia's leadership all watching. 
+                        Message to world: <em>"Get nukes or get captured."</em> Nuclear proliferation incentives just maximized.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Nuclear Swan 3: Medvedev & Nuclear Doctrine -->
+            <div class="swan-card">
+                <div class="swan-card-header" style="background: linear-gradient(135deg, rgba(255,23,68,0.2) 0%, rgba(213,0,249,0.2) 100%);">
+                    <span class="swan-title">⚛️ MEDVEDEV: "LONG LIVE NUCLEAR WEAPONS"</span>
+                    <span class="threat-level critical">CRITICAL</span>
+                </div>
+                <div class="swan-card-body">
+                    <p class="swan-description">
+                        Medvedev's response to Venezuela: <strong>"Long live nuclear weapons!"</strong> — mocking US ability to attack Russia.
+                        Russia withdrew from INF Treaty Aug 2025. Medvedev has systematically <strong>dismantled the nuclear taboo</strong> since 2022.
+                        Aug 1, 2025: Trump deployed 2 nuclear submarines in response to Medvedev's threats. Dead Hand referenced.
+                    </p>
+                    <div class="data-points">
+                        <div class="data-point">
+                            <div class="data-point-label">Nuclear Taboo</div>
+                            <div class="data-point-value danger">Eroded</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">INF Treaty</div>
+                            <div class="data-point-value danger">Withdrawn</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Doomsday Clock</div>
+                            <div class="data-point-value danger">89 Seconds</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">New START</div>
+                            <div class="data-point-value danger">Expires Feb 5</div>
+                        </div>
+                    </div>
+                    <div class="ai-detection">
+                        <div class="ai-detection-header">AI NUCLEAR DETECTION</div>
+                        <p>Medvedev: "Once viewed as liberal counterweight to Putin, has spent 3 years systematically normalizing nuclear threats 
+                        that would have been unthinkable before 2022." Nuclear rhetoric is now background noise. Markets pricing ZERO nuclear risk.
+                        <strong>This is exactly when tail risks materialize — when they're normalized into irrelevance.</strong></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Nuclear Swan 4: New START Expiration -->
+            <div class="swan-card">
+                <div class="swan-card-header" style="background: linear-gradient(135deg, rgba(255,23,68,0.2) 0%, rgba(213,0,249,0.2) 100%);">
+                    <span class="swan-title">📜 NEW START: EXPIRES FEB 5, 2026</span>
+                    <span class="threat-level critical">CRITICAL</span>
+                </div>
+                <div class="swan-card-body">
+                    <p class="swan-description">
+                        <strong>Last remaining nuclear arms treaty expires in 31 days.</strong> First time in 50+ years with no bilateral 
+                        arms control. Russia suspended verification in 2023. China building to nuclear parity. 
+                        "Three-way US-Russia-China arms race will ensue." State Dept fired 1,300+ employees including arms control specialists.
+                    </p>
+                    <div class="data-points">
+                        <div class="data-point">
+                            <div class="data-point-label">Days Until Expiry</div>
+                            <div class="data-point-value danger">31</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Verification</div>
+                            <div class="data-point-value danger">Suspended</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Replacement</div>
+                            <div class="data-point-value danger">None</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Arms Race</div>
+                            <div class="data-point-value warning">Underway</div>
+                        </div>
+                    </div>
+                    <div class="ai-detection">
+                        <div class="ai-detection-header">AI NUCLEAR DETECTION</div>
+                        <p><strong>Markets have priced ZERO premium for end of nuclear arms control era.</strong> 
+                        China's nuclear expansion + Russia's treaty violations + US "upload" plans = three-way arms race.
+                        Doomsday Clock at 89 seconds (closest ever). Jan 27, 2026 announcement likely moves closer.
+                        Financial markets treating existential risk as non-existent.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Nuclear Swan 5: Trump's Targets -->
+            <div class="swan-card">
+                <div class="swan-card-header" style="background: linear-gradient(135deg, rgba(255,23,68,0.2) 0%, rgba(213,0,249,0.2) 100%);">
+                    <span class="swan-title">🎯 TRUMP: 7 COUNTRIES THREATENED IN 24 HOURS</span>
+                    <span class="threat-level critical">CRITICAL</span>
+                </div>
+                <div class="swan-card-body">
+                    <p class="swan-description">
+                        Within 24 hours of Maduro capture: Trump/Rubio threatened <strong>Cuba, Colombia, Mexico, Iran, Greenland, Denmark, China.</strong>
+                        "Donroe Doctrine" invoked. Sen. Graham: Cuba's days "are numbered." Colombia: "Watch your a**."
+                        Mexico: "Something's going to have to be done." Iran: "We are locked and loaded."
+                    </p>
+                    <div class="data-points">
+                        <div class="data-point">
+                            <div class="data-point-label">Countries Threatened</div>
+                            <div class="data-point-value danger">7</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Nuclear States</div>
+                            <div class="data-point-value warning">2 (China, NK)</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">NATO Allies</div>
+                            <div class="data-point-value warning">1 (Denmark)</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Doctrine</div>
+                            <div class="data-point-value">"Donroe"</div>
+                        </div>
+                    </div>
+                    <div class="ai-detection">
+                        <div class="ai-detection-header">AI GEOPOLITICAL DETECTION</div>
+                        <p><strong>The core message to nuclear-armed adversaries: only nukes prevent this.</strong>
+                        Iran immediately sees: "Air defense doesn't work, only nukes protect sovereignty."
+                        North Korea vindicated. Russia/China recalculating conventional vs nuclear investment.
+                        Markets treating this as regional. AI sees: <em>global nuclear proliferation catalyst.</em></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Nuclear Swan 6: Tactical Nuclear Risk -->
+            <div class="swan-card">
+                <div class="swan-card-header" style="background: linear-gradient(135deg, rgba(255,23,68,0.2) 0%, rgba(213,0,249,0.2) 100%);">
+                    <span class="swan-title">💥 TACTICAL NUCLEAR: NON-STATE ACTOR RISK</span>
+                    <span class="threat-level high">HIGH</span>
+                </div>
+                <div class="swan-card-body">
+                    <p class="swan-description">
+                        Venezuela operation proves conventional defense useless. <strong>Only nuclear deterrent prevents regime change.</strong>
+                        Terrorist groups, cartels, failed states all observe this lesson. Russia has ~2,000 tactical nukes.
+                        Pakistan's nuclear security under stress. Bulletin: "Terrorists could exploit poorly secured nuclear facilities."
+                    </p>
+                    <div class="data-points">
+                        <div class="data-point">
+                            <div class="data-point-label">Russian Tac Nukes</div>
+                            <div class="data-point-value danger">~2,000</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Pakistan Status</div>
+                            <div class="data-point-value warning">Unstable</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Loose Nukes Risk</div>
+                            <div class="data-point-value warning">Elevated</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Market Pricing</div>
+                            <div class="data-point-value danger">ZERO</div>
+                        </div>
+                    </div>
+                    <div class="ai-detection">
+                        <div class="ai-detection-header">AI NUCLEAR DETECTION</div>
+                        <p>Venezuela lesson for non-state actors: "Acquire nuclear capability or face regime change."
+                        Drug cartels in Mexico (threatened by Trump) have $50B+ revenue. 
+                        <strong>The incentive structure for nuclear proliferation just inverted.</strong>
+                        Markets pricing this at exactly zero. AI detects: maximum complacency at maximum risk.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Nuclear Swan 7: DEAD HAND / PERIMETER -->
+            <div class="swan-card" style="border: 2px solid var(--signal-red);">
+                <div class="swan-card-header" style="background: linear-gradient(135deg, rgba(255,23,68,0.3) 0%, rgba(0,0,0,0.5) 100%);">
+                    <span class="swan-title">💀 DEAD HAND (PERIMETER): AUTOMATED ARMAGEDDON</span>
+                    <span class="threat-level critical">EXISTENTIAL</span>
+                </div>
+                <div class="swan-card-body">
+                    <p class="swan-description">
+                        Russia's automated nuclear retaliation system — <strong>removes human decision-making</strong>. 
+                        If attack detected AND leadership communication severed → automatically launches command missiles that broadcast 
+                        launch codes to ALL surviving nuclear forces. Upgraded "Sirena-M" version entered service 2020-2025.
+                        <strong>Medvedev explicitly invoked Dead Hand against US in 2025.</strong>
+                    </p>
+                    <div class="data-points">
+                        <div class="data-point">
+                            <div class="data-point-label">Status</div>
+                            <div class="data-point-value danger">OPERATIONAL</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Upgraded</div>
+                            <div class="data-point-value warning">2020-2025</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Detection Range</div>
+                            <div class="data-point-value">7,000 km</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Human Override</div>
+                            <div class="data-point-value danger">BYPASSED</div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(255,23,68,0.1); border: 1px solid rgba(255,23,68,0.3); border-radius: 8px; padding: 15px; margin: 15px 0;">
+                        <div style="font-size: 11px; color: var(--signal-red); letter-spacing: 1px; margin-bottom: 10px;">⚠️ NOV 2024 DOCTRINE CHANGE</div>
+                        <p style="font-size: 12px; color: var(--text);">
+                            Russia's revised nuclear doctrine <strong>lowered threshold</strong> from "very existence of state" 
+                            to <strong>"critical threat to sovereignty"</strong> — potentially EXPANDING scenarios where 
+                            Dead Hand could be activated. Venezuela-style decapitation strikes now potentially trigger automated response.
+                        </p>
+                    </div>
+                    
+                    <div class="ai-detection">
+                        <div class="ai-detection-header">AI EXISTENTIAL DETECTION</div>
+                        <p><strong>This is the ultimate black swan.</strong> Venezuela proves US can decapitate leadership in hours. 
+                        Dead Hand was designed specifically for this scenario. Any miscalculation → automated nuclear exchange 
+                        with NO human in the loop. The system monitors seismic, radiation, air pressure, light, EM signatures. 
+                        If triggered, command missiles launch automatically broadcasting codes to ICBMs, submarines, bombers.
+                        <em>Markets pricing this at exactly zero. The premium for automated extinction is $0.00.</em></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SECTION: DEMOGRAPHIC COLLAPSE / FOURTH TURNING -->
+        <div class="section-header" style="margin-top: 60px;">
+            <span class="icon">👥</span>
+            <h2>Demographic Collapse: The Closing Window</h2>
+            <div class="line"></div>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, rgba(213,0,249,0.1) 0%, rgba(255,23,68,0.1) 100%); border: 1px solid rgba(213,0,249,0.3); border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                <span style="font-size: 24px;">📉</span>
+                <h3 style="font-family: 'Sora', sans-serif; font-size: 18px; color: var(--signal-purple);">THE FOURTH TURNING THESIS: 2025-2027 CLIMAX</h3>
+            </div>
+            <p style="font-size: 13px; line-height: 1.7;">
+                Strauss-Howe's 1997 prophecy: <em>"Sometime before the year 2025, America will pass through a great gate in history, 
+                commensurate with the American Revolution, Civil War, and twin emergencies of the Great Depression and World War II...
+                Every Fourth Turning has registered an upward ratchet in the technology of destruction, and mankind's willingness to use it."</em>
+                <strong style="color: var(--signal-red);">We are now in the predicted climax window.</strong>
+            </p>
+        </div>
+        
+        <div class="swan-grid" style="margin-bottom: 30px;">
+            <!-- Russia Demographic Collapse -->
+            <div class="swan-card">
+                <div class="swan-card-header" style="background: linear-gradient(135deg, rgba(213,0,249,0.2) 0%, rgba(255,23,68,0.2) 100%);">
+                    <span class="swan-title">🇷🇺 RUSSIA: DEMOGRAPHIC IMPLOSION</span>
+                    <span class="threat-level critical">PREEMPTIVE WINDOW</span>
+                </div>
+                <div class="swan-card-body">
+                    <p class="swan-description">
+                        Russia's fertility rate: <strong>1.41</strong> (replacement = 2.1). Population declined 596,000 in 2024 alone (+20% worse than 2023).
+                        <strong>219,000+ soldiers killed in Ukraine</strong> — primarily men of working/reproductive age. 800,000 fled since 2022 
+                        ("brain drain" of young, educated professionals). Men 18-26: down to 7.18M (vs 14.25M projected for 2050).
+                    </p>
+                    <div class="data-points">
+                        <div class="data-point">
+                            <div class="data-point-label">Fertility Rate</div>
+                            <div class="data-point-value danger">1.41</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">2024 Decline</div>
+                            <div class="data-point-value danger">-596K</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">War Dead</div>
+                            <div class="data-point-value danger">219K+</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Emigrated</div>
+                            <div class="data-point-value warning">800K+</div>
+                        </div>
+                    </div>
+                    <div style="background: var(--elevated); border-radius: 8px; padding: 15px; margin: 15px 0;">
+                        <div style="font-size: 11px; color: var(--signal-red); letter-spacing: 1px; margin-bottom: 10px;">INVASION TIMING THEORY</div>
+                        <p style="font-size: 12px; color: var(--text);">
+                            Multiple analysts argue Putin invaded Ukraine in 2022 because <strong>Russia would not have enough military-aged males 
+                            by 2030</strong> to sustain the same operation. Institut Montaigne: "The demographic factor in the Russian invasion...
+                            could be partially analyzed as a 'demographic engineering' operation." Atlantic Council: "A Russia without Russians."
+                        </p>
+                    </div>
+                    <div class="ai-detection">
+                        <div class="ai-detection-header">AI PREEMPTION DETECTION</div>
+                        <p><strong>This is a use-it-or-lose-it scenario.</strong> Russia's military window is closing. By 2030, demographic 
+                        constraints make conventional operations increasingly difficult. This creates incentive for preemptive action 
+                        — including potential nuclear use or proxy operations through North Korea/non-state actors — before the window closes.
+                        <em>Markets pricing zero premium for demographic-driven preemption risk.</em></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- China Demographic Collapse -->
+            <div class="swan-card">
+                <div class="swan-card-header" style="background: linear-gradient(135deg, rgba(213,0,249,0.2) 0%, rgba(255,23,68,0.2) 100%);">
+                    <span class="swan-title">🇨🇳 CHINA: TAIWAN WINDOW 2027</span>
+                    <span class="threat-level critical">DAVIDSON WINDOW</span>
+                </div>
+                <div class="swan-card-body">
+                    <p class="swan-description">
+                        China's fertility rate: <strong>1.01</strong> (one of world's lowest). Population falling from 1.4B to projected 
+                        <strong>320-660M by 2100</strong> (WWII levels). RAND 2025: "Fertility decline in China and its national military, 
+                        structural, and regime security." Pentagon: "PLA must achieve strategic decisive victory over Taiwan by 2027."
+                    </p>
+                    <div class="data-points">
+                        <div class="data-point">
+                            <div class="data-point-label">Fertility Rate</div>
+                            <div class="data-point-value danger">1.01</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">2027 Goal</div>
+                            <div class="data-point-value warning">PLA Ready</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Population 2100</div>
+                            <div class="data-point-value danger">-50-77%</div>
+                        </div>
+                        <div class="data-point">
+                            <div class="data-point-label">Labor Force</div>
+                            <div class="data-point-value warning">Shrinking</div>
+                        </div>
+                    </div>
+                    <div style="background: var(--elevated); border-radius: 8px; padding: 15px; margin: 15px 0;">
+                        <div style="font-size: 11px; color: var(--signal-red); letter-spacing: 1px; margin-bottom: 10px;">MULTIPLE CLOCKS SYNCHRONIZING IN 2027</div>
+                        <p style="font-size: 12px; color: var(--text);">
+                            INSS analysis: "In 2027 several 'clocks' will synchronize for the first time." Xi's 4th term deadline. PLA centenary. 
+                            Taiwan election cycle. TSMC overseas capacity coming online. <strong>China expects to fight and win a war on Taiwan 
+                            by end of 2027.</strong> After 2027, demographic decline accelerates military constraints.
+                        </p>
+                    </div>
+                    <div class="ai-detection">
+                        <div class="ai-detection-header">AI WINDOW DETECTION</div>
+                        <p><strong>The Davidson Window is closing.</strong> Admiral Philip Davidson's 2021 warning that China would have 
+                        capability to take Taiwan by 2027 remains the Pentagon's primary planning assumption. Unlike Russia, China's window 
+                        is capability-driven, not just demographic — but demographics compound the urgency. Both superpowers face 
+                        <em>now or never</em> decisions. Markets pricing this at approximately zero.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Japan-China Crisis 2025 -->
+        <div class="swan-card" style="margin-bottom: 30px; border: 2px solid var(--signal-orange);">
+            <div class="swan-card-header" style="background: linear-gradient(135deg, rgba(255,145,0,0.2) 0%, rgba(255,23,68,0.2) 100%);">
+                <span class="swan-title">🇯🇵🇨🇳 JAPAN-CHINA CRISIS: DECEMBER 2025</span>
+                <span class="threat-level high">ESCALATING</span>
+            </div>
+            <div class="swan-card-body">
+                <p class="swan-description">
+                    <strong>Dec 6-10, 2025: Most dangerous Japan-China confrontation in decades.</strong> Chinese J-15 fighters from carrier 
+                    Liaoning locked fire-control radar on Japanese F-15s (first public disclosure ever). Dec 9: Russia and China flew 
+                    <strong>nuclear-capable Tu-95 and H-6 bombers</strong> with fighter escorts around Japan in 8-hour joint patrol. 
+                    Japanese Defense Minister: "Clearly intended as a show of force... serious concern for our national security."
+                </p>
+                <div class="data-points">
+                    <div class="data-point">
+                        <div class="data-point-label">Radar Lock</div>
+                        <div class="data-point-value danger">33 min</div>
+                    </div>
+                    <div class="data-point">
+                        <div class="data-point-label">Joint Patrol</div>
+                        <div class="data-point-value danger">10th Time</div>
+                    </div>
+                    <div class="data-point">
+                        <div class="data-point-label">Nuclear Bombers</div>
+                        <div class="data-point-value warning">Tu-95/H-6</div>
+                    </div>
+                    <div class="data-point">
+                        <div class="data-point-label">Trigger</div>
+                        <div class="data-point-value">Taiwan Comments</div>
+                    </div>
+                </div>
+                <div style="background: var(--elevated); border-radius: 8px; padding: 15px; margin: 15px 0;">
+                    <div style="font-size: 11px; color: var(--signal-orange); letter-spacing: 1px; margin-bottom: 10px;">CASCADING EVENTS (DEC 2025)</div>
+                    <div style="font-size: 12px; color: var(--text);">
+                        Nov 7: PM Takaichi says Japan would respond to Taiwan attack → Dec 6: Radar lock incident → 
+                        Dec 7: Japan summons Chinese ambassador → Dec 9: Russia-China nuclear bomber patrol → 
+                        Dec 10: US deploys B-52s with Japanese F-35s → Dec 29: China announces "Justice Mission 2025" Taiwan exercises.
+                        <strong style="color: var(--signal-red);">This is the most dangerous Pacific escalation since 1996 Taiwan Strait Crisis.</strong>
+                    </div>
+                </div>
+                <div class="ai-detection">
+                    <div class="ai-detection-header">AI CASCADE DETECTION</div>
+                    <p><strong>Fire-control radar lock is one step from engagement.</strong> This is not routine posturing — it's the most 
+                    threatening act a military aircraft can take short of firing. Combined with nuclear bomber patrols, Taiwan drills, 
+                    and explicit rhetoric, this represents a fundamental escalation in regional risk. 
+                    <em>North Korea nuking Japan is no longer theoretical — it's a calculated deterrent option.</em></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- North Korea Japan Risk -->
+        <div class="swan-card" style="margin-bottom: 30px; border: 2px solid var(--signal-red);">
+            <div class="swan-card-header" style="background: linear-gradient(135deg, rgba(255,23,68,0.2) 0%, rgba(0,0,0,0.3) 100%);">
+                <span class="swan-title">🇰🇵 NORTH KOREA → JAPAN: NUCLEAR STRIKE RISK</span>
+                <span class="threat-level critical">EXISTENTIAL PROXY</span>
+            </div>
+            <div class="swan-card-body">
+                <p class="swan-description">
+                    North Korea has 10+ ICBMs capable of hitting all of North America (DIA 2025). Hwasong-19 tested Oct 2024 — 
+                    "can deliver nuclear payload to targets throughout North America." <strong>50 ICBMs projected by 2035.</strong>
+                    Japan is within range of ALL North Korean missiles. 2022 law: nuclear strikes "automatically" if Kim killed 
+                    or command severed — <strong>North Korea has its own Dead Hand.</strong>
+                </p>
+                <div class="data-points">
+                    <div class="data-point">
+                        <div class="data-point-label">Current ICBMs</div>
+                        <div class="data-point-value danger">10+</div>
+                    </div>
+                    <div class="data-point">
+                        <div class="data-point-label">2035 Projection</div>
+                        <div class="data-point-value danger">50</div>
+                    </div>
+                    <div class="data-point">
+                        <div class="data-point-label">Japan Range</div>
+                        <div class="data-point-value danger">100%</div>
+                    </div>
+                    <div class="data-point">
+                        <div class="data-point-label">Russia Alliance</div>
+                        <div class="data-point-value warning">Active</div>
+                    </div>
+                </div>
+                <div style="background: rgba(255,23,68,0.1); border: 1px solid rgba(255,23,68,0.3); border-radius: 8px; padding: 15px; margin: 15px 0;">
+                    <div style="font-size: 11px; color: var(--signal-red); letter-spacing: 1px; margin-bottom: 10px;">PROXY STRIKE THEORY</div>
+                    <p style="font-size: 12px; color: var(--text);">
+                        Russia's Foreign Minister Lavrov (July 2025): Russia "respects North Korea's aspirations" for nuclear weapons — 
+                        denuclearization is a "closed issue." <strong>If Russia/China face demographic-driven preemption pressure but want 
+                        deniability, North Korea is the obvious proxy.</strong> A North Korean strike on Japan would devastate US ally 
+                        without direct superpower confrontation. Venezuela proves decapitation works. Only nukes deter.
+                    </p>
+                </div>
+                <div class="ai-detection">
+                    <div class="ai-detection-header">AI PROXY DETECTION</div>
+                    <p><strong>North Korea is the perfect proxy actor.</strong> Russia is actively sharing "nuclear and missile-applicable 
+                    technology" with DPRK (US Forces Korea Commander, 2025 testimony). Kim's 2022 law automates nuclear response. 
+                    If Russia or China needs to strike US allies without direct attribution, North Korea provides plausible deniability.
+                    <em>Markets price North Korea as "crazy regime making noise." AI detects: "Rational proxy with aligned interests."</em></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Non-State Actor Risk -->
+        <div class="swan-card" style="margin-bottom: 50px;">
+            <div class="swan-card-header" style="background: linear-gradient(135deg, rgba(255,145,0,0.2) 0%, rgba(255,23,68,0.2) 100%);">
+                <span class="swan-title">💀 NON-STATE ACTOR: TACTICAL NUCLEAR RISK</span>
+                <span class="threat-level high">ELEVATED</span>
+            </div>
+            <div class="swan-card-body">
+                <p class="swan-description">
+                    Trump threatened <strong>7 countries in 24 hours</strong> after Venezuela: Cuba, Colombia, Mexico, Iran, Greenland, Denmark, China.
+                    Mexican cartels have $50B+ annual revenue. Pakistan nuclear security under stress. Russia has ~2,000 tactical nukes.
+                    <strong>Venezuela lesson to non-state actors: only nuclear capability prevents regime change.</strong>
+                </p>
+                <div class="data-points">
+                    <div class="data-point">
+                        <div class="data-point-label">Countries Threatened</div>
+                        <div class="data-point-value danger">7</div>
+                    </div>
+                    <div class="data-point">
+                        <div class="data-point-label">Cartel Revenue</div>
+                        <div class="data-point-value">$50B+/yr</div>
+                    </div>
+                    <div class="data-point">
+                        <div class="data-point-label">Russian Tac Nukes</div>
+                        <div class="data-point-value danger">~2,000</div>
+                    </div>
+                    <div class="data-point">
+                        <div class="data-point-label">Pakistan Status</div>
+                        <div class="data-point-value warning">Unstable</div>
+                    </div>
+                </div>
+                <div class="ai-detection">
+                    <div class="ai-detection-header">AI NON-STATE DETECTION</div>
+                    <p><strong>The incentive structure for nuclear proliferation just inverted.</strong> Pre-Venezuela: nukes invite intervention.
+                    Post-Venezuela: only nukes prevent intervention. Every cartel, terrorist group, and separatist movement now sees the calculus.
+                    Pakistan's weapons are the most vulnerable. Russia has tactical nukes that could "go missing."
+                    <em>Markets pricing zero premium for non-state nuclear events.</em></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CRITICAL: Wall Street Consensus -->
+        <div class="swan-card" style="margin-bottom: 50px; border: 2px solid var(--signal-purple);">
+            <div class="swan-card-header" style="background: linear-gradient(135deg, rgba(213,0,249,0.15) 0%, rgba(255,23,68,0.15) 100%);">
+                <span class="swan-title">🎯 WALL STREET UNANIMOUS BULLISHNESS</span>
+                <span class="threat-level critical">EXTREME SIGNAL</span>
+            </div>
+            <div class="swan-card-body">
+                <p class="swan-description">
+                    <strong>22 of 22 major institutional firms predict POSITIVE returns for 2026.</strong>
+                    Zero firms forecast a down year. Range: +1.5% (Stifel) to +17.4% (Oppenheimer). 
+                    Average target: 7,500 (+8.7%). This is identical to Dec 2007 consensus before -37% crash.
+                </p>
+                
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0;">
+                    <div class="data-point">
+                        <div class="data-point-label">Bullish Firms</div>
+                        <div class="data-point-value danger">22 / 22</div>
+                    </div>
+                    <div class="data-point">
+                        <div class="data-point-label">Bearish Firms</div>
+                        <div class="data-point-value danger">0</div>
+                    </div>
+                    <div class="data-point">
+                        <div class="data-point-label">Most Bearish</div>
+                        <div class="data-point-value warning">+1.5%</div>
+                    </div>
+                    <div class="data-point">
+                        <div class="data-point-label">Consensus</div>
+                        <div class="data-point-value">+8.7%</div>
+                    </div>
+                </div>
+                
+                <div style="background: var(--elevated); border-radius: 8px; padding: 15px; margin: 15px 0;">
+                    <div style="font-size: 11px; color: var(--signal-red); letter-spacing: 1px; margin-bottom: 10px;">HISTORICAL PRECEDENT</div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-size: 12px;">
+                        <div>
+                            <div style="color: var(--muted);">Dec 1999</div>
+                            <div style="color: var(--signal-red);">100% bullish → -49%</div>
+                        </div>
+                        <div>
+                            <div style="color: var(--muted);">Dec 2007</div>
+                            <div style="color: var(--signal-red);">100% bullish → -37%</div>
+                        </div>
+                        <div>
+                            <div style="color: var(--muted);">Dec 2021</div>
+                            <div style="color: var(--signal-red);">Near unanimous → -19%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ai-detection">
+                    <div class="ai-detection-header">AI CRITICAL DETECTION</div>
+                    <p><strong>This is the most powerful contrarian signal available.</strong> Wall Street's sell-side business model 
+                    requires bullishness. Career risk asymmetry: being bullish and wrong = "unforeseeable event"; being bearish 
+                    and wrong = fired. When 22/22 institutions agree, it's not analysis — it's groupthink. 
+                    Groupthink at market tops is the single most reliable predictor of regime change.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dogs That Didn't Bark -->
+        <div class="silence-section">
+            <div class="silence-header">
+                <span style="font-size: 28px;">🔇</span>
+                <h3>"The Dog That Didn't Bark" — Absence Signals</h3>
+            </div>
+            <div class="silence-grid">
+                <div class="silence-item">
+                    <h4>No VIX Spike on Venezuela</h4>
+                    <p>VIX remained at 15-16 during largest US military operation since Iraq. Markets should panic on regime change precedent. They didn't. This complacency IS the signal.</p>
+                </div>
+                <div class="silence-item">
+                    <h4>No Flight to Safety on Taiwan</h4>
+                    <p>Largest Chinese exercises in decades. 90% of advanced chips at risk. Yet semiconductor stocks barely moved. Risk is being systematically ignored.</p>
+                </div>
+                <div class="silence-item">
+                    <h4>Credit Spreads at Cycle Lows</h4>
+                    <p>300bps HY spreads while $1T+ maturity wall approaches. Historical pattern: spread compression precedes violent re-pricing. Market pricing zero risk of wave.</p>
+                </div>
+                <div class="silence-item">
+                    <h4>Zero Bearish Forecasts</h4>
+                    <p>22/22 Wall Street firms bullish for 2026. Not one predicts negative return. Same pattern as Dec 2007, Dec 1999. Unanimous consensus = maximum fragility.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Timeline -->
+        <div class="section-header">
+            <span class="icon">⏱️</span>
+            <h2>Catalyst Timeline</h2>
+            <div class="line"></div>
+        </div>
+        
+        <div class="timeline-section">
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">NOW</div>
+                    <div class="timeline-label">Current State</div>
+                    <div class="timeline-event">Venezuela Fallout</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">JAN 14-17</div>
+                    <div class="timeline-label">Bank Earnings</div>
+                    <div class="timeline-event">JPM/C/BAC Report</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">JAN 27</div>
+                    <div class="timeline-label">Doomsday Clock</div>
+                    <div class="timeline-event">2026 Announcement</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">JAN 30</div>
+                    <div class="timeline-label">Shutdown Deadline</div>
+                    <div class="timeline-event">CRITICAL WINDOW</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">FEB 5</div>
+                    <div class="timeline-label">New START Expires</div>
+                    <div class="timeline-event">ARMS CONTROL ENDS</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2027</div>
+                    <div class="timeline-label">Davidson Window</div>
+                    <div class="timeline-event">PLA TAIWAN READY</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Probability Assessment -->
+        <div class="section-header">
+            <span class="icon">🎲</span>
+            <h2>AI Probability Assessment</h2>
+            <div class="line"></div>
+        </div>
+        
+        <div class="probability-section">
+            <div class="probability-grid">
+                <div class="probability-card medium">
+                    <div class="probability-value">62%</div>
+                    <div class="probability-label">Correction (10-20%)</div>
+                    <div class="probability-timeframe">Within 90 Days</div>
+                </div>
+                <div class="probability-card high">
+                    <div class="probability-value">40%</div>
+                    <div class="probability-label">Crash (>20%)</div>
+                    <div class="probability-timeframe">Within 12 Months</div>
+                </div>
+                <div class="probability-card low">
+                    <div class="probability-value">18%</div>
+                    <div class="probability-label">Systemic Event</div>
+                    <div class="probability-timeframe">Tail Risk</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Final Assessment -->
+        <div class="final-assessment">
+            <h3>◉ Final AI Assessment ◉</h3>
+            <p class="final-statement">
+                <strong>18 independent structural risks converging</strong> at the climax of the Fourth Turning cycle (Strauss-Howe 1997: 
+                "Sometime before 2025...a great gate in history"). Russia and China face <strong>demographic collapse</strong> — fertility rates 
+                of 1.41 and 1.01 respectively create closing military windows. Russia invaded Ukraine in 2022 partly because it won't have 
+                enough military-aged males by 2030. China's 2027 PLA deadline reflects the same calculus. Both face <strong>use-it-or-lose-it</strong> 
+                decisions. Dead Hand automated retaliation. North Korea as proxy. Japan-China radar locks in December 2025. Markets at ATH 
+                with 22/22 analysts bullish. <strong>This is civilizational-scale pattern recognition at maximum signal strength.</strong>
+            </p>
+            <p class="final-quote">
+                "When two nuclear superpowers face demographic collapse, their closing military windows create preemption incentives.
+                Markets don't price civilizational transitions. The Fourth Turning is here."
+            </p>
+        </div>
+        
+        <!-- Legal Disclaimer -->
+        <div style="margin-top: 60px; padding: 40px 30px; border-top: 1px solid var(--border); text-align: center;">
+            <p style="font-size: 13px; color: var(--text); margin-bottom: 20px; line-height: 1.8;">
+                <strong style="color: var(--signal-orange);">IMPORTANT LEGAL DISCLAIMER:</strong> This dashboard and all information contained herein is provided for 
+                <strong>informational and educational purposes only</strong> and does not constitute investment advice, financial advice, trading advice, or any other sort of advice. 
+                <strong style="color: var(--signal-yellow);">Nothing on this dashboard should be construed as a recommendation to buy, sell, or hold any security, cryptocurrency, derivative, or other financial instrument.</strong>
+            </p>
+            <p style="font-size: 12px; color: var(--muted); margin-bottom: 20px; line-height: 1.8;">
+                The analysis presented is based on historical data, statistical models, and AI-generated interpretations which may contain errors, inaccuracies, or omissions. 
+                <strong style="color: var(--text);">Past performance is not indicative of future results.</strong> Cryptocurrency trading involves substantial risk of loss and is not suitable for all investors. 
+                You should consult with a qualified financial advisor, broker, or other licensed professional before making any investment decisions.
+            </p>
+            <p style="font-size: 12px; color: var(--muted); margin-bottom: 30px; line-height: 1.8;">
+                The creators, developers, and distributors of this dashboard <strong style="color: var(--text);">assume no responsibility or liability</strong> for any errors or omissions in the content, or for any actions 
+                taken based on the information provided herein. By using this dashboard, you acknowledge and agree that you are solely responsible for your own investment 
+                decisions and that you use this information at your own risk.
+            </p>
+            <p style="font-size: 11px; color: var(--muted); margin-bottom: 30px;">
+                © 2026 | Powered by Claude AI + Alpha Vantage | Not affiliated with any broker, exchange, or financial institution.
+            </p>
+        </div>
+        
+        <!-- Licensing -->
+        <div style="padding: 20px 30px; border-top: 1px solid var(--border); text-align: center;">
+            <p style="font-size: 12px; color: var(--muted);">
+                <strong style="color: var(--text);">Financial Risk Analysis Dashboard</strong> © 2026 by <strong style="color: var(--signal-cyan);">AlphaOne LLC</strong> is licensed under 
+                <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer" style="color: var(--signal-cyan); text-decoration: none;">
+                    Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International
+                </a>
+                <span style="margin-left: 10px; display: inline-flex; gap: 5px; vertical-align: middle;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--muted);">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M10.5 6.5C10.5 6.5 11 6 12 6C13.5 6 14.5 7 14.5 8.5C14.5 10 13 10.5 12 11.5V13"></path>
+                        <circle cx="12" cy="16" r="0.5" fill="currentColor"></circle>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--muted);">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 8v4l2 2"></path>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--muted);">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M8 12h8"></path>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--muted);">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9 9h6v6H9z"></path>
+                    </svg>
+                </span>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
